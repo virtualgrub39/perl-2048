@@ -7,12 +7,54 @@ use Exporter 'import';
 use File::Basename qw(dirname);
 use File::Spec;
 
-our @EXPORT_OK = qw(init_window window_should_close close_window begin_drawing end_drawing);
+our @EXPORT_OK = qw(
+    init_window window_should_close close_window begin_drawing end_drawing
+    Color Vector2 clear_background
+);
 
-my $ffi = FFI::Platypus->new( api => 1 );
+use FFI::Platypus 2.00;  
+my $ffi = FFI::Platypus->new( api => 2 );
+$ffi->lib( File::Spec->catfile(dirname(__FILE__), 'libraylib.so') );
 
-my $dir = dirname(__FILE__);
-$ffi->lib( File::Spec->catfile($dir, 'libraylib.so') );
+{
+    package Raylib::Color;
+    use strict;
+    use warnings;
+    use FFI::Platypus::Record;
+    record_layout_1(
+        'uint8' => 'r',
+        'uint8' => 'g',
+        'uint8' => 'b',
+        'uint8' => 'a',
+    );
+    1;
+}
+
+{
+    package Raylib::Vector2;
+    use strict;
+    use warnings;
+    use FFI::Platypus::Record;
+    record_layout_1(
+        'float' => 'x',
+        'float' => 'y',
+    );
+    1;
+}
+
+$ffi->type( 'record(Raylib::Color)'   => 'ray_color' );
+$ffi->type( 'record(Raylib::Vector2)' => 'ray_vec2' );
+
+sub Color {
+    my ($r, $g, $b, $a) = @_;
+    $a = 255 unless defined $a;
+    return Raylib::Color->new( r => $r, g => $g, b => $b, a => $a );
+}
+
+sub Vector2 {
+    my ($x, $y) = @_;
+    return Raylib::Vector2->new( x => $x, y => $y );
+}
 
 $ffi->attach( 'InitWindow' => ['int', 'int', 'string'] => 'void' );
 sub init_window {
@@ -40,5 +82,10 @@ sub end_drawing {
     EndDrawing();   
 }
 
+$ffi->attach( 'ClearBackground' => ['ray_color'] => 'void' );
+sub clear_background {
+    my ($color) = @_;
+    ClearBackground($color); 
+}
 
 1;
