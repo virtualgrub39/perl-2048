@@ -9,7 +9,7 @@ use File::Spec;
 
 our @EXPORT_OK = qw(
     init_window window_should_close close_window begin_drawing end_drawing
-    Color Vector2 clear_background
+    Color Vector2 clear_background draw_rectangle draw_text measure_text
 );
 
 use FFI::Platypus 2.00;  
@@ -86,6 +86,24 @@ $ffi->attach( 'ClearBackground' => ['ray_color'] => 'void' );
 sub clear_background {
     my ($color) = @_;
     ClearBackground($color); 
+}
+
+$ffi->attach( 'DrawRectangle' => ['int', 'int', 'int', 'int', 'ray_color'] => 'void' );
+sub draw_rectangle {
+    my ($pos_x, $pos_y, $width, $height, $color) = @_;
+    DrawRectangle($pos_x, $pos_y, $width, $height, $color); 
+}
+
+$ffi->attach( 'DrawText' => ['string', 'int', 'int', 'int', 'ray_color'] => 'void' );
+sub draw_text {
+    my ($string, $pos_x, $pos_y, $font_size, $color) = @_;
+    DrawText($string, $pos_x, $pos_y, $font_size, $color); 
+}
+
+$ffi->attach( 'MeasureText' => ['string', 'int'] => 'int' );
+sub measure_text {
+    my ($string, $font_size) = @_;
+    return MeasureText($string, $font_size); 
 }
 
 1;
