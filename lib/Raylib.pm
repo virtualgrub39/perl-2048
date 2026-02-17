@@ -2,28 +2,28 @@ package Raylib;
 use strict;
 use warnings;
 
-use FFI::Platypus 2.00;  
+use FFI::Platypus 2.00;
 use Exporter 'import';
 use File::Basename qw(dirname);
 use File::Spec;
 
 our @EXPORT_OK = qw(
-    init_window window_should_close close_window begin_drawing end_drawing
-    Color Vector2 clear_background draw_rectangle draw_text measure_text
-    get_key_pressed KEY_RIGHT KEY_LEFT KEY_DOWN KEY_UP
-    get_random_value
+  init_window window_should_close close_window begin_drawing end_drawing
+  Color Vector2 clear_background draw_rectangle draw_text measure_text
+  get_key_pressed KEY_RIGHT KEY_LEFT KEY_DOWN KEY_UP
+  get_random_value
 );
 
 my $ffi = FFI::Platypus->new( api => 2 );
-$ffi->lib( File::Spec->catfile(dirname(__FILE__), 'libraylib.so') );
+$ffi->lib( File::Spec->catfile( dirname(__FILE__), 'libraylib.so' ) );
 
 our $KEY_RIGHT = 262;
-our $KEY_LEFT = 263;
-our $KEY_DOWN = 264;
-our $KEY_UP = 265;
-
+our $KEY_LEFT  = 263;
+our $KEY_DOWN  = 264;
+our $KEY_UP    = 265;
 
 {
+
     package Raylib::Color;
     use strict;
     use warnings;
@@ -38,6 +38,7 @@ our $KEY_UP = 265;
 }
 
 {
+
     package Raylib::Vector2;
     use strict;
     use warnings;
@@ -53,75 +54,88 @@ $ffi->type( 'record(Raylib::Color)'   => 'ray_color' );
 $ffi->type( 'record(Raylib::Vector2)' => 'ray_vec2' );
 
 sub Color {
-    my ($r, $g, $b, $a) = @_;
+    my ( $r, $g, $b, $a ) = @_;
     $a = 255 unless defined $a;
     return Raylib::Color->new( r => $r, g => $g, b => $b, a => $a );
 }
 
 sub Vector2 {
-    my ($x, $y) = @_;
+    my ( $x, $y ) = @_;
     return Raylib::Vector2->new( x => $x, y => $y );
 }
 
-$ffi->attach( 'InitWindow' => ['int', 'int', 'string'] => 'void' );
+$ffi->attach( 'InitWindow' => [ 'int', 'int', 'string' ] => 'void' );
+
 sub init_window {
-    my ($width, $height, $title) = @_;
-    InitWindow($width, $height, $title);   
+    my ( $width, $height, $title ) = @_;
+    InitWindow( $width, $height, $title );
 }
 
-$ffi->attach( 'WindowShouldClose' => [] => 'int'  );
+$ffi->attach( 'WindowShouldClose' => [] => 'int' );
+
 sub window_should_close {
     return WindowShouldClose();
 }
 
 $ffi->attach( 'CloseWindow' => [] => 'void' );
+
 sub close_window {
-    CloseWindow();   
+    CloseWindow();
 }
 
 $ffi->attach( 'BeginDrawing' => [] => 'void' );
+
 sub begin_drawing {
-    BeginDrawing();   
+    BeginDrawing();
 }
 
 $ffi->attach( 'EndDrawing' => [] => 'void' );
+
 sub end_drawing {
-    EndDrawing();   
+    EndDrawing();
 }
 
 $ffi->attach( 'ClearBackground' => ['ray_color'] => 'void' );
+
 sub clear_background {
     my ($color) = @_;
-    ClearBackground($color); 
+    ClearBackground($color);
 }
 
-$ffi->attach( 'DrawRectangle' => ['int', 'int', 'int', 'int', 'ray_color'] => 'void' );
+$ffi->attach(
+    'DrawRectangle' => [ 'int', 'int', 'int', 'int', 'ray_color' ] => 'void' );
+
 sub draw_rectangle {
-    my ($pos_x, $pos_y, $width, $height, $color) = @_;
-    DrawRectangle($pos_x, $pos_y, $width, $height, $color); 
+    my ( $pos_x, $pos_y, $width, $height, $color ) = @_;
+    DrawRectangle( $pos_x, $pos_y, $width, $height, $color );
 }
 
-$ffi->attach( 'DrawText' => ['string', 'int', 'int', 'int', 'ray_color'] => 'void' );
+$ffi->attach(
+    'DrawText' => [ 'string', 'int', 'int', 'int', 'ray_color' ] => 'void' );
+
 sub draw_text {
-    my ($string, $pos_x, $pos_y, $font_size, $color) = @_;
-    DrawText($string, $pos_x, $pos_y, $font_size, $color); 
+    my ( $string, $pos_x, $pos_y, $font_size, $color ) = @_;
+    DrawText( $string, $pos_x, $pos_y, $font_size, $color );
 }
 
-$ffi->attach( 'MeasureText' => ['string', 'int'] => 'int' );
+$ffi->attach( 'MeasureText' => [ 'string', 'int' ] => 'int' );
+
 sub measure_text {
-    my ($string, $font_size) = @_;
-    return MeasureText($string, $font_size); 
+    my ( $string, $font_size ) = @_;
+    return MeasureText( $string, $font_size );
 }
 
 $ffi->attach( 'GetKeyPressed' => [] => 'int' );
+
 sub get_key_pressed {
-    return GetKeyPressed(); 
+    return GetKeyPressed();
 }
 
-$ffi->attach( 'GetRandomValue' => ['int', 'int'] => 'int' );
+$ffi->attach( 'GetRandomValue' => [ 'int', 'int' ] => 'int' );
+
 sub get_random_value {
-    my ($min, $max) = @_;
-    return GetRandomValue($min, $max); 
+    my ( $min, $max ) = @_;
+    return GetRandomValue( $min, $max );
 }
 
 1;
