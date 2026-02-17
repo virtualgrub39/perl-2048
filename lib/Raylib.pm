@@ -11,6 +11,7 @@ our @EXPORT_OK = qw(
     init_window window_should_close close_window begin_drawing end_drawing
     Color Vector2 clear_background draw_rectangle draw_text measure_text
     get_key_pressed KEY_RIGHT KEY_LEFT KEY_DOWN KEY_UP
+    get_random_value
 );
 
 use FFI::Platypus 2.00;  
@@ -118,5 +119,10 @@ sub get_key_pressed {
     return GetKeyPressed(); 
 }
 
+$ffi->attach( 'GetRandomValue' => ['int', 'int'] => 'int' );
+sub get_random_value {
+    my ($min, $max) = @_;
+    return GetRandomValue($min, $max); 
+}
 
 1;
