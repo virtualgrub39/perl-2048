@@ -2,7 +2,7 @@ package Raylib;
 use strict;
 use warnings;
 
-use FFI::Platypus;
+use FFI::Platypus 2.00;  
 use Exporter 'import';
 use File::Basename qw(dirname);
 use File::Spec;
@@ -14,7 +14,6 @@ our @EXPORT_OK = qw(
     get_random_value
 );
 
-use FFI::Platypus 2.00;  
 my $ffi = FFI::Platypus->new( api => 2 );
 $ffi->lib( File::Spec->catfile(dirname(__FILE__), 'libraylib.so') );
 

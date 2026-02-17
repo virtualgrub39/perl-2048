@@ -12,7 +12,6 @@ my $BOARD_SZ = 4;
 
 my $COLOR_BG = Raylib::Color(56, 63, 81);
 my $COLOR_FG = Raylib::Color(221, 219, 241);
-# my $COLOR_HL = Raylib::Color(233, 138, 21);
 my @COLORS = (
     Raylib::Color(238, 228, 218), # 2
     Raylib::Color(235, 216, 182), # 4
