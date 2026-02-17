@@ -10,11 +10,18 @@ use File::Spec;
 our @EXPORT_OK = qw(
     init_window window_should_close close_window begin_drawing end_drawing
     Color Vector2 clear_background draw_rectangle draw_text measure_text
+    get_key_pressed KEY_RIGHT KEY_LEFT KEY_DOWN KEY_UP
 );
 
 use FFI::Platypus 2.00;  
 my $ffi = FFI::Platypus->new( api => 2 );
 $ffi->lib( File::Spec->catfile(dirname(__FILE__), 'libraylib.so') );
+
+our $KEY_RIGHT = 262;
+our $KEY_LEFT = 263;
+our $KEY_DOWN = 264;
+our $KEY_UP = 265;
+
 
 {
     package Raylib::Color;
@@ -105,5 +112,11 @@ sub measure_text {
     my ($string, $font_size) = @_;
     return MeasureText($string, $font_size); 
 }
+
+$ffi->attach( 'GetKeyPressed' => [] => 'int' );
+sub get_key_pressed {
+    return GetKeyPressed(); 
+}
+
 
 1;
